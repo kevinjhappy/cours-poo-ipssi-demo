@@ -10,6 +10,4 @@ class WarriorWizard extends Wizard
 
          $this->force = $force;
      }
-
-
 }

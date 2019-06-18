@@ -1,0 +1,17 @@
+{
+    "name": "ipssi/battle-demo",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "",
+            "email": ""
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Game\\": "src/"
+        }
+    }
+}

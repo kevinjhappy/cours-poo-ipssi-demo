@@ -1,7 +1,13 @@
 <?php
 
-class Wizard extends Character implements CanHealHimselfInterface
+class Wizard extends FightingCharacter implements CanHealHimselfInterface,
+    ManaPointInterface,
+    CanWalkInterface
 {
+    use HealWithMagicTrait, HealWithPotionTrait {
+        HealWithMagicTrait::heal insteadof HealWithPotionTrait;
+    }
+
     const MAX_LIFE_POINT = 15;
 
     private $manaPoint;
@@ -9,19 +15,20 @@ class Wizard extends Character implements CanHealHimselfInterface
 
     public static $age = 23;
 
-    public function __construct($lifePoint, $manaPoint, $level = 1)
+    public function __construct($lifePoint, $manaPoint, $force, $level = 1)
     {
         $this->lifePoint = $lifePoint;
         $this->manaPoint = $manaPoint;
+        $this->force = $force;
         $this->level = $level;
     }
 
-    public function getManaPoint()
+    public function getManaPoint(): int
     {
         return $this->manaPoint;
     }
 
-    public function useManaPoint($usedManaPoint)
+    public function useManaPoint(int $usedManaPoint): void
     {
         $this->manaPoint -= $usedManaPoint;
     }
@@ -29,17 +36,24 @@ class Wizard extends Character implements CanHealHimselfInterface
     public function healHimself(): bool
     {
         if ($this->manaPoint >= 2) {
-            $this->manaPoint -= 2;
-            $this->lifePoint += 4;
-
+            $this->setLifePointReceived(4);
+            $this->lifePoint += $this->heal();
+            $this->manaPoint -= $this->manaPointSpent;
             return true;
         }
 
-        return false;
+        $this->lifePoint += $this->healWithPotion();
+
+        return true;
     }
 
     public static function getAge()
     {
         return self::$age;
+    }
+
+    public function walk(): bool
+    {
+        // TODO: Implement walk() method.
     }
 }

@@ -1,17 +1,63 @@
 <?php
 
+function __autoload($class)
+{
+    if (strpos($class, 'Exception') !== false) {
+        require_once 'src/Exceptions/' . $class . '.php';
+    } else {
+        require_once 'src/' . $class . '.php';
+    }
+}
+
+/**
+require 'src/NoPotionAvailableException.php';
+require 'src/CharacterAtFullLifeException.php';
 require 'src/CanHealHimselfInterface.php';
+require 'src/GainOneLevelInterface.php';
+require 'src/ManaPointInterface.php';
+require 'src/CanWalkInterface.php';
+require 'src/CanRunInterface.php';
+require 'src/CanTakeDamageInterface.php';
+require 'src/HealWithMagicTrait.php';
+require 'src/HealWithPotionTrait.php';
+require 'src/HealWithSomethingTrait.php';
+require 'src/CanHitInterface.php';
+require 'src/CanBattleInterface.php';
 require 'src/Character.php';
+require 'src/FightingCharacter.php';
 require 'src/Warrior.php';
 require 'src/Wizard.php';
-
+require 'src/BlackWizard.php';
+require 'src/Battle.php';
+*/
 
 $livePointPotion = Warrior::getLifePointForPotion();
 
-$warrior1 = new Warrior(10, 2, 3);
+$warrior1 = new Warrior(18, 2, 3);
 $warrior2 = new Warrior(20, 3, 2);
 
 $warrior3 = clone $warrior1;
+$wizard1 = new Wizard(15, 18, 1, 4);
+
+try {
+    var_dump($warrior1->healHimself());
+    var_dump($warrior1->healHimself());
+} catch (NoPotionAvailableException $exception) {
+    echo "NoPotionAvailableException: I tried to heal the warrior and got this error : " . $exception;
+} catch (CharacterAtFullLifeException $exception) {
+    echo $exception->getMessage();
+} catch (Exception $exception) {
+    echo "I got this error : " . $exception->getMessage();
+} finally {
+    echo "The warrior finished to try healing";
+}
+
+$battle = new Battle($warrior1, $warrior2, $warrior3, $wizard1);
+$battle->oneRoundBattle();
+
+var_dump($warrior2);
+var_dump($wizard1);
+
 
 $wizard1 = new Wizard(15, 18, 2);
 $wizard1->takeDamage(3);
@@ -27,14 +73,14 @@ echo Wizard::getMaxLifePoint();
 
 echo Wizard::getAge();
 
-function battle(Character $character){
-    var_dump($character->healHimself());
-}
-
 
 function healYourself(CanHealHimselfInterface $character) {
-    if ($character->healHimself() === true) {
-        return "the character succeed to heal himself";
+    try {
+        if ($character->healHimself() === true) {
+            return "the character succeed to heal himself";
+        }
+    } catch (Exception $exception) {
+        echo $exception->getMessage();
     }
 
     return "The character did not succeed to heal Himself";
@@ -42,18 +88,15 @@ function healYourself(CanHealHimselfInterface $character) {
 
 healYourself($wizard1);
 
-battle($warrior1);
-die;
-
 $warriorStatic = Warrior::create();
 var_dump($warriorStatic);
 
-$warrior2Damage = $warrior2->giveDamage();
+$warrior2Damage = $warrior2->hit();
 
 $warrior1->takeDamage($warrior2Damage);
 
 echo $warrior1->getLifePoint();
-echo $warrior1->getForce();
+echo $warrior1->hit();
 
 echo Warrior::getMaxLifePoint();
 
@@ -69,3 +112,32 @@ var_dump(Warrior::getAverageLevel());
 
 $warrior3 = new Warrior(10, 2, 5);
 var_dump($warrior3->isUnderAverageLevel());
+
+
+function runToNextCity(CanRunInterface $canRun) {
+    if (!$canRun->run()) {
+        $canRun->walk();
+        return "arrived to City in 15 minutes";
+    }
+    return "arrived to City in 5 minutes";
+}
+
+function walkToNextCity(CanWalkInterface $canWalk) {
+    $canWalk->walk();
+    return "arrived to City in 15 minutes";
+}
+
+echo runToNextCity($warrior1);
+
+echo "\n\n";
+
+function useManapoint(Wizard $wizard)
+{
+    $wizard->useManaPoint(2);
+    echo $wizard->getManaPoint();
+}
+
+$blackWizard = new BlackWizard(15, 18, 5, 3);
+
+useManaPoint($blackWizard);
+

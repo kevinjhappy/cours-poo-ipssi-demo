@@ -1,6 +1,6 @@
 <?php
 
-abstract class Character
+abstract class Character implements CanTakeDamageInterface
 {
     private const MAX_LIFE_POINT = 20;
     // attributs
@@ -38,7 +38,7 @@ abstract class Character
 
     public static function getMaxLifePoint()
     {
-        return static::MAX_LIFE_POINT;
+        return self::MAX_LIFE_POINT;
     }
 
     /**

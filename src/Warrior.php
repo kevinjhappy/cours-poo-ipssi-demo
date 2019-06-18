@@ -1,12 +1,14 @@
 <?php
 
-class Warrior extends Character implements CanHealHimselfInterface, GainOneLevelInterface
+class Warrior extends FightingCharacter
+    implements CanHealHimselfInterface,
+    GainOneLevelInterface,
+    CanRunInterface
 {
-    // attributs
-    private $force;
-
     private $potionNumber = 3;
     private $level;
+
+    private $stamina = 10;
 
     private static $averageLevel = 1 ;
 
@@ -24,15 +26,13 @@ class Warrior extends Character implements CanHealHimselfInterface, GainOneLevel
 
     public function __clone()
     {
-        echo 'Object cloné';
+        echo 'Cloned Object';
     }
 
     public function __call($name, $arguments)
     {
         echo "the function $name does not exist";
     }
-
-
 
     public function __sleep()
     {
@@ -43,8 +43,6 @@ class Warrior extends Character implements CanHealHimselfInterface, GainOneLevel
     {
         echo 'Unserialize called';
     }
-
-
 
     public static function increaseAverageLevel()
     {
@@ -61,48 +59,34 @@ class Warrior extends Character implements CanHealHimselfInterface, GainOneLevel
         return new self(15, 3);
     }
 
-
-
     public static function getLifePointForPotion()
     {
         return self::MAX_HEALING_POINT_IN_ONE_TIME;
     }
-
-    public static function getPotionNumber($data)
-    {
-        return 3 + $data ;
-    }
-
-    // methodes
-
-
-    public function giveDamage()
-    {
-        return $this->force ;
-    }
-
-
 
     public function setLifePoint(int $lifePoint)
     {
         $this->lifePoint = $lifePoint;
     }
 
-    public function getForce()
-    {
-        return $this->force;
-    }
-
-
+    /**
+     * @return bool
+     * @throws NoPotionAvailableException
+     */
     public function healHimself(): bool
     {
-        if ($this->isPotionAvailable()) {
-            $healResult = $this->usePotionToHeal();
-
-            return $healResult;
+        if (!$this->isPotionAvailable()) {
+            throw new NoPotionAvailableException();
         }
 
-        return $this->rest();
+        if ($this->lifePoint >= Character::getMaxLifePoint()) {
+            throw new CharacterAtFullLifeException("Character is already at full life");
+        }
+
+        $healResult = $this->usePotionToHeal();
+
+        return $healResult;
+
     }
 
     private function usePotionToHeal()
@@ -131,6 +115,26 @@ class Warrior extends Character implements CanHealHimselfInterface, GainOneLevel
     public function gainOneLevel(int $forceStat, int $defenseStat, bool $checkAverage = false): int
     {
         // TODO: Implement gainOneLevel() method.
+    }
+
+    public function run(): bool
+    {
+        if ($this->stamina <= 1) {
+            return false;
+        }
+        $this->stamina-= 2;
+
+        return true;
+    }
+
+    public function walk(): bool
+    {
+        if ($this->stamina === 0) {
+            return false;
+        }
+        $this->stamina--;
+
+        return true;
     }
 
 }

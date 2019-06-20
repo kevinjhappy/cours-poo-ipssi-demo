@@ -56,3 +56,11 @@ class CarRefacto
         $this->engine = $engine;
     }
 }
+
+function addOneUnity(&$int)
+{
+    $int++;
+}
+
+$int = 3;
+addOneUnity($int);

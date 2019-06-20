@@ -1,5 +1,6 @@
 <?php
+namespace Game\Exceptions;
 
-class CharacterAtFullLifeException extends LogicException
+class CharacterAtFullLifeException extends \LogicException
 {
 }

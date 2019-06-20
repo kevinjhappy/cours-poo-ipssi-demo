@@ -1,6 +1,7 @@
 <?php
+namespace Game\Exceptions;
 
-class NoPotionAvailableException extends Exception
+class NoPotionAvailableException extends \Exception
 {
     public function __toString()
     {

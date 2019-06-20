@@ -1,11 +1,9 @@
 {
-    "name": "ipssi/battle-demo",
-    "type": "project",
-    "license": "MIT",
+    "name": "kevin/ipssi-d21.1",
     "authors": [
         {
-            "name": "",
-            "email": ""
+            "name": "kevin.nadin",
+            "email": "kevin.nadin@gmail.com"
         }
     ],
     "require": {},

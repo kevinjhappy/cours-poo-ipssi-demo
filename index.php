@@ -1,5 +1,6 @@
 <?php
 
+/**
 function __autoload($class)
 {
     if (strpos($class, 'Exception') !== false) {
@@ -8,6 +9,19 @@ function __autoload($class)
         require_once 'src/' . $class . '.php';
     }
 }
+*/
+
+function autoloadSource($class)
+{
+    if (strpos($class, 'Exception') !== false) {
+        require_once 'src/Exceptions/' . $class . '.php';
+    } else {
+        require_once 'src/' . $class . '.php';
+    }
+}
+
+spl_autoload_register('autoloadSource');
+
 
 /**
 require 'src/NoPotionAvailableException.php';
@@ -31,13 +45,41 @@ require 'src/BlackWizard.php';
 require 'src/Battle.php';
 */
 
-$livePointPotion = Warrior::getLifePointForPotion();
+$livePointPotion = WarriorNamespace\Warrior::getLifePointForPotion();
 
-$warrior1 = new Warrior(18, 2, 3);
-$warrior2 = new Warrior(20, 3, 2);
+$lifePoint = new LifePoint(18);
+$lifePoint2 = new LifePoint(20);
+
+$weapon = new Weapon('Sword');
+$weapon2 = $weapon;
+
+
+var_dump($weapon);
+
+try {
+    $lifePoint3 = new LifePoint(40);
+} catch (TooMuchLifePointAtBeginningException $exception) {
+    echo $exception->getCustomMessage();
+}
+
+$warrior1 = new Warrior($lifePoint, 3, 2);
+
+echo "\n";
+$arrayObject = new ArrayObject($warrior1);
+
+echo $arrayObject['stamina'];
+echo "\n";
+var_dump($warrior1);
+
+$reflectionObject = new ReflectionObject($warrior1);
+
+echo "\n". count($warrior1) . "\n";
+$warrior2 = new Warrior($lifePoint2, 3, 2);
 
 $warrior3 = clone $warrior1;
 $wizard1 = new Wizard(15, 18, 1, 4);
+
+echo "\n". count($warrior1) . "\n";
 
 try {
     var_dump($warrior1->healHimself());
@@ -57,6 +99,7 @@ $battle->oneRoundBattle();
 
 var_dump($warrior2);
 var_dump($wizard1);
+
 
 
 $wizard1 = new Wizard(15, 18, 2);

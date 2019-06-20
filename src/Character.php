@@ -1,4 +1,5 @@
 <?php
+namespace Game;
 
 abstract class Character implements CanTakeDamageInterface
 {

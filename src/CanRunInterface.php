@@ -1,8 +1,6 @@
 <?php
 
-interface CanRunInterface
+interface CanRunInterface extends CanWalkInterface
 {
     public function run(): bool;
-
-    public function walk(): bool;
 }

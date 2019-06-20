@@ -1,6 +1,6 @@
 <?php
 
-abstract class FightingCharacter extends Character implements CanBattleInterface
+abstract class FightingCharacter extends Game\Character implements CanBattleInterface
 {
     protected $force;
 
